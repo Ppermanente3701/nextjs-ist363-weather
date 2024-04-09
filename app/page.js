@@ -19,13 +19,15 @@ const Homepage = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [daysOfWeek, setDaysOfWeek] = useState(null);
+  const [activeDayIndex, setActiveDayIndex] = useState(0);
 
   const peopleArr = getPeople();
 
   useEffect(() => {
     getGeoLocation()
       .then((position) => {
-        //console.log(position);
+        console.log(position);
         setLocation(position);
       })
       .catch((error) => {
@@ -41,14 +43,24 @@ const Homepage = () => {
     location ? fetchData() : null;
   }, [location]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await getWeatherData();
+  useEffect(() => {
+    // filter out the days of the week
+    const tempWeek = [];
 
-  //     setWeatherData(response);
-  //   };
-  //   fetchData();
-  // }, []);
+    weatherData &&
+      weatherData.list.filter((block) => {
+        const date = new Date(block.dt * 1000);
+        const options = { weekday: "short" };
+        const day = date.toLocaleDateString("en-US", options);
+        //console.log(day);
+        if (!tempWeek.includes(day)) {
+          tempWeek.push(day);
+        }
+      });
+
+    setDaysOfWeek(tempWeek);
+    //then set state with the days of the week
+  }, [weatherData]);
 
   //console.log({ peopleArr });
   return (
@@ -71,6 +83,27 @@ const Homepage = () => {
       {/*<PeoplePicker people={peopleArr} />
       <ButtonDemo />
   <ColorPicker />*/}
+      {daysOfWeek && (
+        <section>
+          <ul>
+            {daysOfWeek.map((day, index) => {
+              return <li key={index}>{day}</li>;
+            })}
+          </ul>
+          <div>
+            {weatherData?.list
+              .filter((block) => {
+                const date = new Date(block.dt * 1000);
+                const options = { weekday: "short" };
+                const day = date.toLocaleDateString("en-US", options);
+                return day === daysOfWeek[activeDayIndex];
+              })
+              .map((block, index) => {
+                return <p key={index}>{block.main.temp}</p>;
+              })}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
