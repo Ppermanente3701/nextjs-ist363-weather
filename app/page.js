@@ -65,11 +65,11 @@ const Homepage = () => {
   //console.log({ peopleArr });
   return (
     <div>
-      <h1>Wheather app</h1>
+      <h1>Weather app</h1>
       {errorMsg && <div>{errorMsg}</div>}
       {weatherData && (
         <div>
-          <h2>{weatherData.city.name}</h2>
+          <h2>{weatherData?.city.name}</h2>
           <p>Current temp: {weatherData.list[0].main.temp}&deg; F</p>
           <p>{weatherData.list[0].weather[0].description}</p>
           <Image
