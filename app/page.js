@@ -89,6 +89,13 @@ const Homepage = () => {
                 height={100}
               />
               <br />
+              <p>Feels like</p>
+              <Temp
+                size="lg"
+                amount={weatherData.list[1].main.temp}
+                unit={tempUnit}
+              />
+              <br />
               <Button
                 label={`Change to ${
                   tempUnit === "imperial" ? "celsius" : "fahrenheit"
